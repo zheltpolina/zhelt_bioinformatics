@@ -1,11 +1,11 @@
 from tkinter import *
-root = Tk()
-
-
+from tkinter import filedialog
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+root = Tk()
 
 def temp_cardas(normal_path, analyse_path):
 
@@ -32,8 +32,16 @@ def temp_cardas(normal_path, analyse_path):
 
 #def btn1_click():
 def btn2_click():
-    btn2_click('normal1.csv', 'analyse1.csv')
+    temp_cardas('normal1.csv', 'analyse1.csv')
 
+
+def load_file():
+    filepath = filedialog.askopenfilename(
+        title="Выберите файл",
+        filetypes=(("CSV файлы", "*.csv"), ("Все файлы", "*.*"))
+    )
+    if filepath:
+        print(f"Выбран файл: {filepath}")
 root.title("кластерный анализ")
 root.geometry("350x250")
 
@@ -43,16 +51,32 @@ canvas.pack()
 frame = Frame(root, bg="dark blue")
 frame.place(relwidth=1, relheight=1 )
 
+
 title = Label(frame, text="продолжить?", padx=30, pady=20)
 title.grid(row=5, column=5)
 title.pack()
 
-btn = Button(frame, text="да", padx=23, pady=10)
-btn1 = Button(frame, text="нет", padx=20, pady=10)
-btn2 = Button(frame, text="построить тепловую карту", padx=23, pady=10, command=btn2_click)
-btn.pack()
-btn1.pack()
-btn2.pack()
+btn_frame = Frame(frame, bg="dark blue")
+btn_frame.pack(pady=5)
+
+btn = Button(btn_frame, text="да", padx=23, pady=10)
+btn1 = Button(btn_frame, text="нет", padx=23, pady=10)
+
+btn.pack(side=LEFT, padx=5)
+btn1.pack(side=LEFT, padx=5)
+
+btn2 = Button(frame, text="построить тепловую карту", padx=80, pady=10, command=btn2_click)
+btn2.pack(pady=10)
+
+load_btn = Button(
+    frame,
+    text="Загрузить файл",
+    padx=50,
+    pady=10,
+    command=load_file,
+    bg="lightblue"
+)
+load_btn.pack(pady=5)
 
 root.mainloop()
 
