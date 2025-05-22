@@ -1,6 +1,6 @@
 from tkinter import filedialog
 from tkinter import Toplevel, Label, Button, X
-from analyse import temp_cardas, cluster_analysis
+from zhelt_bioinformatics.analyse import temp_cardas, cluster_analysis
 
 current_file = None
 normal_file = 'normal1.csv'
