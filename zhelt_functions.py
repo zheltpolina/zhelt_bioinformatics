@@ -5,6 +5,11 @@ import seaborn as sns
 
 
 class ClusterAnalyzer:
+    """Анализатор кластеров для данных экспрессии генов.
+
+    Класс предоставляет функциональность для загрузки, обработки и визуализации
+    данных экспрессии генов с использованием кластерного анализа.
+    """
 
     def __init__(self):
         """Инициализирует анализатор с пустыми данными."""
@@ -15,18 +20,31 @@ class ClusterAnalyzer:
     def load_expression_data(self, file_path):
         """Загружает данные экспрессии генов из CSV-файла.
 
+        Вход:
+            file_path (str): Путь к CSV-файлу с данными экспрессии генов.
+                             Ожидается, что файл содержит столбец 'gene_id'.
         """
         self.expression_data = pd.read_csv(file_path)
 
     def load_stats_data(self, file_path):
         """Загружает статистические данные по генам из CSV-файла.
 
+        Вход:
+            file_path (str): Путь к CSV-файлу со статистическими данными.
+                             Ожидаются столбцы: 'median_tum', 'median_norm', 'M_W'.
         """
         self.stats_data = pd.read_csv(file_path)
 
     def perform_clustering(self, data=None):
         """Выполняет кластеризацию данных методом K-means.
 
+        Вход:
+            data (DataFrame, optional): Данные для кластеризации. Если не указаны,
+                                       используются загруженные статистические данные.
+
+        Выход:
+            DataFrame: Исходные данные с добавленным столбцом 'labels_nse',
+                      содержащим метки кластеров (0-3).
         """
         if data is None:
             data = self.stats_data
@@ -48,6 +66,12 @@ class ClusterAnalyzer:
     def get_cluster_data(self, cluster_num):
         """Возвращает данные для указанного кластера.
 
+        Вход:
+            cluster_num (int): Номер кластера (0-3), данные которого нужно получить.
+
+        Выход:
+            DataFrame: Подмножество данных, принадлежащих указанному кластеру.
+                      Возвращает None, если кластеризация не была выполнена.
         """
         if self.current_clusters is not None:
             return self.current_clusters[self.current_clusters['labels_nse'] == cluster_num]
@@ -56,6 +80,12 @@ class ClusterAnalyzer:
     def create_cluster_plots(self, data):
         """Создает графики экспрессии генов по кластерам.
 
+        Вход:
+            data (DataFrame): Данные с метками кластеров (должен быть столбец 'labels_nse').
+
+        Выход:
+            Figure: Объект matplotlib Figure с 4 подграфиками (по одному на каждый кластер),
+                    показывающими медианную экспрессию в опухолевой и нормальной ткани.
         """
         fig, axes = plt.subplots(2, 2, figsize=(12, 10))
         fig.suptitle("Кластерный анализ генов")
@@ -75,6 +105,12 @@ class ClusterAnalyzer:
     def create_heatmap(self, cluster_num):
         """Создает тепловую карту экспрессии генов для указанного кластера.
 
+        Вход:
+            cluster_num (int): Номер кластера (0-3) для визуализации.
+
+        Выход:
+            Figure: Объект matplotlib Figure с тепловой картой экспрессии генов
+                    для указанного кластера. Возвращает None, если данные не загружены.
         """
         if self.current_clusters is None:
             return None
