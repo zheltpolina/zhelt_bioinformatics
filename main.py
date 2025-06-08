@@ -5,7 +5,11 @@ from zhelt_functions import ClusterAnalyzer
 
 
 class ClusterAnalysisApp:
+
     def __init__(self, root):
+        """Инициализирует приложение.
+
+        """
         self.root = root
         self.root.title("Кластерный анализ генов")
 
@@ -16,6 +20,7 @@ class ClusterAnalysisApp:
         self.create_widgets()
 
     def create_widgets(self):
+        """Создает и размещает элементы интерфейса в главном окне."""
         # Кнопки для загрузки файлов
         tk.Label(self.root, text="Файл с экспрессией генов:").pack()
         tk.Button(self.root, text="Загрузить CSV", command=self.load_expression_file).pack()
@@ -29,6 +34,11 @@ class ClusterAnalysisApp:
         self.analyze_btn.pack(pady=10)
 
     def load_expression_file(self):
+        """Загружает файл с данными экспрессии генов.
+
+        Открывает диалоговое окно для выбора CSV-файла и загружает данные
+        Активирует кнопку анализа, если загружены оба файла.
+        """
         file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
         if file_path:
             try:
@@ -38,6 +48,11 @@ class ClusterAnalysisApp:
                 messagebox.showerror("Ошибка", f"Не удалось загрузить файл: {e}")
 
     def load_stats_file(self):
+        """Загружает файл со статистикой генов.
+
+        Открывает диалоговое окно для выбора CSV-файла и загружает данные
+        Активирует кнопку анализа, если загружены оба файла.
+        """
         file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
         if file_path:
             try:
@@ -47,20 +62,27 @@ class ClusterAnalysisApp:
                 messagebox.showerror("Ошибка", f"Не удалось загрузить файл: {e}")
 
     def check_files_loaded(self):
+        """Проверяет, загружены ли оба файла, и активирует кнопку анализа."""
         if self.analyzer.expression_data is not None and self.analyzer.stats_data is not None:
             self.analyze_btn.config(state=tk.NORMAL)
 
     def perform_initial_clustering(self):
+        """Выполняет кластерный анализ и отображает результаты."""
         clustered_data = self.analyzer.perform_clustering()
         self.show_results(clustered_data)
 
     def perform_clustering_for_cluster(self, cluster_num):
+        """Выполняет кластерный анализ для указанного кластера.
+        """
         cluster_data = self.analyzer.get_cluster_data(cluster_num)
         if cluster_data is not None:
             new_clusters = self.analyzer.perform_clustering(cluster_data)
             self.show_results(new_clusters)
 
     def show_results(self, data):
+        """Отображает результаты кластерного анализа.
+
+        """
         # Показать графики кластеров
         self.show_cluster_plots(data)
 
@@ -68,6 +90,9 @@ class ClusterAnalysisApp:
         self.show_action_buttons()
 
     def show_cluster_plots(self, data):
+        """Создает окно с графиками кластеров.
+
+        """
         plots_window = tk.Toplevel(self.root)
         plots_window.title("Графики кластеров")
 
@@ -78,10 +103,11 @@ class ClusterAnalysisApp:
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
     def show_action_buttons(self):
+        """Создает окно с кнопками для дополнительных действий с кластерами."""
         action_window = tk.Toplevel(self.root)
         action_window.title("Действия с кластерами")
 
-        #для кнопок повторного анализа
+        # для кнопок повторного анализа
         reanalyze_frame = tk.Frame(action_window)
         reanalyze_frame.pack(pady=10)
 
@@ -95,7 +121,7 @@ class ClusterAnalysisApp:
                             command=lambda num=i: self.perform_clustering_for_cluster(num))
             btn.pack(side=tk.LEFT, padx=5)
 
-        #для кнопок тепловой карты
+        # для кнопок тепловой карты
         heatmap_frame = tk.Frame(action_window)
         heatmap_frame.pack(pady=10)
 
@@ -110,6 +136,9 @@ class ClusterAnalysisApp:
             btn.pack(side=tk.LEFT, padx=5)
 
     def show_heatmap(self, cluster_num):
+        """Отображает тепловую карту для указанного кластера.
+
+        """
         fig = self.analyzer.create_heatmap(cluster_num)
         if fig:
             heatmap_window = tk.Toplevel(self.root)
@@ -123,6 +152,7 @@ class ClusterAnalysisApp:
 
 
 if __name__ == "__main__":
+    """Точка входа для запуска приложения."""
     root = tk.Tk()
     app = ClusterAnalysisApp(root)
     root.mainloop()

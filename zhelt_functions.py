@@ -5,18 +5,29 @@ import seaborn as sns
 
 
 class ClusterAnalyzer:
+
     def __init__(self):
+        """Инициализирует анализатор с пустыми данными."""
         self.expression_data = None
         self.stats_data = None
         self.current_clusters = None
 
     def load_expression_data(self, file_path):
+        """Загружает данные экспрессии генов из CSV-файла.
+
+        """
         self.expression_data = pd.read_csv(file_path)
 
     def load_stats_data(self, file_path):
+        """Загружает статистические данные по генам из CSV-файла.
+
+        """
         self.stats_data = pd.read_csv(file_path)
 
     def perform_clustering(self, data=None):
+        """Выполняет кластеризацию данных методом K-means.
+
+        """
         if data is None:
             data = self.stats_data
 
@@ -35,11 +46,17 @@ class ClusterAnalyzer:
         return data
 
     def get_cluster_data(self, cluster_num):
+        """Возвращает данные для указанного кластера.
+
+        """
         if self.current_clusters is not None:
             return self.current_clusters[self.current_clusters['labels_nse'] == cluster_num]
         return None
 
     def create_cluster_plots(self, data):
+        """Создает графики экспрессии генов по кластерам.
+
+        """
         fig, axes = plt.subplots(2, 2, figsize=(12, 10))
         fig.suptitle("Кластерный анализ генов")
 
@@ -56,6 +73,9 @@ class ClusterAnalyzer:
         return fig
 
     def create_heatmap(self, cluster_num):
+        """Создает тепловую карту экспрессии генов для указанного кластера.
+
+        """
         if self.current_clusters is None:
             return None
 
